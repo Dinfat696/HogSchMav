@@ -33,7 +33,7 @@ import java.util.Collection;
             return service.update(id, student);
         }
 
-        @DeleteMapping
+        @DeleteMapping("/{id}")
         public Student delete(@PathVariable Long id) {
             return service.remove(id);
         }
