@@ -102,24 +102,7 @@ public class FacultyControllerMvcTest {
                 .andExpect((ResultMatcher) jsonPath("$.color").value("red"));
 
     }
-//
-//    @Test
-//    void filteredBetween() throws Exception {
-//        when(studentRepository.findAllByAgeBetween(0, 20)).thenReturn(Arrays.asList(
-//                new Student(1l, "Ivan", 20),
-//                new Student(2l, "Varina", 21)
-//        ));
-//        mockMvc.perform(MockMvcRequestBuilders.get("/student/age-between?min=0&max=20")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect((ResultMatcher) jsonPath("$").isArray())
-//                .andExpect((ResultMatcher) jsonPath("$[0].id").value(1L))
-//                .andExpect((ResultMatcher) jsonPath("$[1].id").value(2L));
-//
-//
-//    }
-//
+
     @Test
     void getAll() throws Exception {
         when(facultyRepository.findAll()).thenReturn(Arrays.asList(
@@ -153,9 +136,10 @@ public class FacultyControllerMvcTest {
                 .andExpect((ResultMatcher) jsonPath("$[0].id").value(1L))
                 .andExpect((ResultMatcher) jsonPath("$[2].id").value(3L));
     }
+
     @Test
     void filteredByColorOrName() throws Exception {
-        when(facultyRepository.findAllByColorLikeIgnoreCaseOrNameLikeIgnoreCase("blue","Mat")).thenReturn(Arrays.asList(
+        when(facultyRepository.findAllByColorLikeIgnoreCaseOrNameLikeIgnoreCase("blue", "Mat")).thenReturn(Arrays.asList(
                 new Faculty(1l, "Mat", "black"),
                 new Faculty(2l, "Fis", "red"),
                 new Faculty(3l, "Rus", "black"),

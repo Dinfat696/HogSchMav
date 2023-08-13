@@ -124,19 +124,21 @@ public class FacultyControllerTestRestTemplate {
         assertThat(response.getBody().size()).isEqualTo(1);
         assertThat(response.getBody()).isNotNull();
     }
+
     @Test
-    void byStudent(){
+    void byStudent() {
         ResponseEntity<Faculty> response = createFaculty("math", "blue");
-        Faculty expectedFaculty=response.getBody();
-        Student student=new Student();
+        Faculty expectedFaculty = response.getBody();
+        Student student = new Student();
         student.setFaculty(expectedFaculty);
         ResponseEntity<Student> studentResponseEntity = template.postForEntity("/student", student, Student.class);
-        Long studentId=studentResponseEntity.getBody().getId();
-        response=template.getForEntity("/faculty/by-student?studentId="+studentId, Faculty.class);
+        Long studentId = studentResponseEntity.getBody().getId();
+        response = template.getForEntity("/faculty/by-student?studentId=" + studentId, Faculty.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).isEqualTo(expectedFaculty);
 
     }
+
 }
 

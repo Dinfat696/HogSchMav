@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(classes = HogwartsApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTestRestTemplate {
 
@@ -140,6 +141,7 @@ public class StudentControllerTestRestTemplate {
 //        assertThat(response.getBody()).isEqualTo(body);
 //
 //    }не могу понять
+
 }
 
 
