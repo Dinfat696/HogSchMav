@@ -33,7 +33,7 @@ import java.util.Collection;
             return service.update(id, student);
         }
 
-        @DeleteMapping
+        @DeleteMapping("/{id}")
         public Student delete(@PathVariable Long id) {
             return service.remove(id);
         }
@@ -62,16 +62,31 @@ import java.util.Collection;
         public Collection<Student> getByFaculty(Long facultyId) {
             return service.getByFacultyId(facultyId);
         }
-        @PostMapping(value = "/{studentId}/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        public ResponseEntity<Long> save(@PathVariable Long studentId, @RequestBody MultipartFile multipartFile){
+
+        @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<Long> save(@PathVariable Long studentId, @RequestBody MultipartFile multipartFile) {
             try {
-                return ResponseEntity.ok(avatarService.save(studentId,multipartFile));
-            } catch (IOException e){
+                return ResponseEntity.ok(avatarService.save(studentId, multipartFile));
+            } catch (IOException e) {
                 e.printStackTrace();
                 return ResponseEntity.badRequest().build();
             }
 
         }
+        @GetMapping("/count")
+        public Long getCountStudent() {
+            return service.getCountStudent();
+        }
+        @GetMapping("/average-age")
+        public Double getAverageAgeStudents() {
+            return service.getAverageAgeStudents();
+        }
+        @GetMapping("/last-five")
+        public Collection<Student> findLastFiveStudents() {
+            return  service.lastStudent();
+        }
+
+
 
     }
 

@@ -64,4 +64,18 @@ public class StudentService {
                 .map(Faculty::getStudents)
                 .orElseThrow(FacultyNotFoundException::new);
     }
+
+    public Long getCountStudent() {
+        return studentRepository.getCountStudents();
+    }
+
+    public Double getAverageAgeStudents() {
+        return studentRepository.getAverageAgeStudents();
+    }
+
+    public Collection<Student> lastStudent() {
+        return studentRepository.findLastFiveStudents();
+
+
+    }
 }

@@ -27,7 +27,7 @@ import java.util.Collection;
             return service.update(id, faculty);
         }
 
-        @DeleteMapping
+        @DeleteMapping("/{id}")
         public Faculty delete(@PathVariable Long id) {
             return service.remove(id);
         }
