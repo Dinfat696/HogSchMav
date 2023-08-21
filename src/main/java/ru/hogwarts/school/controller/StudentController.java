@@ -10,9 +10,10 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 
-    @RestController
+@RestController
     @RequestMapping("/student")
     public class StudentController {
         private final StudentService service;
@@ -82,8 +83,9 @@ import java.util.Collection;
             return service.getAverageAgeStudents();
         }
         @GetMapping("/last-five")
-        public Collection<Student> findLastFiveStudents() {
-            return  service.lastStudent();
+        public ResponseEntity<List<Student>> findLastFiveStudents() {
+            List<Student> students = service.findLastFiveStudents();
+            return ResponseEntity.ok(students);
         }
 
 
