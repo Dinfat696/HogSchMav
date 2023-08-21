@@ -14,9 +14,8 @@ import ru.hogwarts.school.reposirory.FacultyRepository;
 import ru.hogwarts.school.reposirory.StudentRepository;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = HogwartsApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FacultyControllerTestRestTemplate {
@@ -106,7 +105,7 @@ public class FacultyControllerTestRestTemplate {
     }
 
     @Test
-    void filtered() {
+    void filteredByColor() {
         ResponseEntity<Collection> response = template
                 .getForEntity("/faculty/filtered?color=blue", Collection.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -117,7 +116,7 @@ public class FacultyControllerTestRestTemplate {
     }
 
     @Test
-    void colorByName() {
+    void filteredByColorOrByName() {
         ResponseEntity<Collection> response = template
                 .getForEntity("/faculty/by-color-or-name?colorOrName=blue", Collection.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -126,13 +125,13 @@ public class FacultyControllerTestRestTemplate {
     }
 
     @Test
-    void byStudent() {
+    void getbyStudent() {
         ResponseEntity<Faculty> response = createFaculty("math", "blue");
-        Faculty expectedFaculty = response.getBody();
         Student student = new Student();
+        Faculty expectedFaculty = response.getBody();
         student.setFaculty(expectedFaculty);
         ResponseEntity<Student> studentResponseEntity = template.postForEntity("/student", student, Student.class);
-        Long studentId = studentResponseEntity.getBody().getId();
+        long studentId = studentResponseEntity.getBody().getId();
         response = template.getForEntity("/faculty/by-student?studentId=" + studentId, Faculty.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();

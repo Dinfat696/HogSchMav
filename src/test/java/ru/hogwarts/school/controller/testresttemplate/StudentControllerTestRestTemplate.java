@@ -10,12 +10,13 @@ import org.springframework.http.ResponseEntity;
 import ru.hogwarts.school.HogwartsApplication;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.reposirory.AvatarRepository;
 import ru.hogwarts.school.reposirory.FacultyRepository;
 import ru.hogwarts.school.reposirory.StudentRepository;
+import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.service.StudentService;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +29,16 @@ public class StudentControllerTestRestTemplate {
     @Autowired
     TestRestTemplate template;
     @Autowired
+    StudentRepository studentRepository;
+    @Autowired
     FacultyRepository facultyRepository;
     @Autowired
-    StudentRepository studentRepository;
+    AvatarRepository avatarRepository;
+    @Autowired
+    StudentService studentService;
+    @Autowired
+    FacultyService facultyService;
+
 
     @BeforeEach
     void init() {
@@ -126,23 +134,64 @@ public class StudentControllerTestRestTemplate {
         assertThat(response.getBody().size()).isEqualTo(1);
         assertThat(response.getBody()).isNotNull();
     }
-//    @Test
-//    void byFaculty(){
-//        ResponseEntity<Collection> response;
-//        response = template.getForEntity("/student", Collection.class);
-//        Collection body = response.getBody();
-//        Faculty faculty=new Faculty();
-//        faculty.setStudents((List<Student>) body);
-//        ResponseEntity<Faculty> facultyResponseEntity = template.postForEntity("/faculty", faculty, Faculty.class);
-//        Long facultyId=facultyResponseEntity.getBody().getId();
-//        response=template.getForEntity("/student/by-faculty?studentId="+facultyId, Collection.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody()).isNotNull();
-//        assertThat(response.getBody()).isEqualTo(body);
-//
-//    }не могу понять
+
+    @Test
+    void byFaculty() {
+        Faculty faculty = new Faculty(null, "Fiz", "red");
+        ResponseEntity<Faculty> response = template.postForEntity("/faculty", faculty, Faculty.class);
+        Student student = new Student(null, "Vova", 20);
+        student.setFaculty(response.getBody());
+        ResponseEntity<Student> studentResponseEntity = template.postForEntity("/student", student, Student.class);
+        Long facultyId = response.getBody().getId();
+        ResponseEntity<Collection> students = template.getForEntity("/student/by-faculty?facultyId=" + facultyId, Collection.class);
+        assertThat(students.getBody().isEmpty()).isFalse();
+        Map<String, String> resultStudent = (LinkedHashMap<String, String>) students.getBody().iterator().next();
+        assertThat(resultStudent.get("name")).isEqualTo("Vova");
+
+    }
+
+    @Test
+    public void getCount() {
+        ResponseEntity<Long> count = template.getForEntity("/student/count", Long.class);
+        assertThat(count.getBody()).isEqualTo(2);
+    }
+
+    @Test
+    public void getAverage() {
+        ResponseEntity<Double> average = template.getForEntity("/student/average-age", Double.class);
+        assertThat(average.getBody()).isNotNull();
+        assertThat(average.getBody()).isEqualTo(22.5);
+    }
+
+    @Test
+    public void getLastFive() {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student(null, "Student3", 20));
+        students.add(new Student(null, "Student4", 21));
+        students.add(new Student(null, "Student5", 22));
+        students.add(new Student(null, "Student6", 23));
+        students.add(new Student(null, "Student7", 24));
+        students.add(new Student(null, "Student8", 25));
+        students.add(new Student(null, "Student9", 26));
+        students.add(new Student(null, "Student10", 27));
+        for (Student student : students) {
+            template.postForEntity("/student", student, Student.class);
+        }
+        ResponseEntity<Student[]> response = template.getForEntity("/student/last-five", Student[].class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).hasSize(5);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).hasSize(5);
+        assertThat(response.getBody()[0].getId()).isEqualTo(10L);
+        assertThat(response.getBody()[1].getId()).isEqualTo(9L);
+        assertThat(response.getBody()[2].getId()).isEqualTo(8L);
+        assertThat(response.getBody()[3].getId()).isEqualTo(7L);
+        assertThat(response.getBody()[4].getId()).isEqualTo(6L);
+    }
 
 }
+
+
 
 
 
