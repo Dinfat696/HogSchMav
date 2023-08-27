@@ -1,9 +1,10 @@
 create TABLE users (
-id INT,
+id INT PRIMARY KEY,
 fisr_name TEXT PRIMARY KEY,
 age INT,
 driving_license BOOLEAN,
-id_car INT
+id_car INT REFERENCE car (id)
+
 );
 create TABLE cars (
 id INT,
