@@ -1,5 +1,7 @@
 package ru.hogwarts.school.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/avatar")
 public class AvatarController {
+    private static final Logger logger = LoggerFactory.getLogger(AvatarController.class);
     public final AvatarService avatarService;
 
     public AvatarController(AvatarService avatarService) {
@@ -31,7 +34,8 @@ public class AvatarController {
         try (FileInputStream fis = new FileInputStream(avatar.getFilePath())) {
             fis.transferTo(response.getOutputStream());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("Filed to download avatar with id = " + id, e);
+
         }
     }
 

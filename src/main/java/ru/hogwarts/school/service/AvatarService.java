@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AvatarService {
+    private static final Logger logger = LoggerFactory.getLogger(AvatarService.class);
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
     @Value("${path.to.avatars.folder}")
@@ -30,10 +33,14 @@ public class AvatarService {
     }
 
     public Avatar getById(Long id) {
+        logger.info("Start method getById");
         return avatarRepository.findById(id).orElseThrow();
     }
 
     public Long save(Long studentId, MultipartFile multipartFile) throws IOException {
+        logger.info("Start method save");
+        logger.debug("File size=  " + multipartFile.getSize());
+
         Files.createDirectories(avatarPath);
         int doIndex = multipartFile.getOriginalFilename().lastIndexOf(".");
         String fileExtension = multipartFile.getOriginalFilename().substring(doIndex + 1);
@@ -55,6 +62,7 @@ public class AvatarService {
     }
 
     public List<AvatarDto> findAvatarsPaginated(int pageNumber) {
+        logger.info("Start method findAvatarsPaginated");
         return avatarRepository.findAll(PageRequest.of(pageNumber, 5))
                 .getContent()
                 .stream()
