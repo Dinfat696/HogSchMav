@@ -17,6 +17,7 @@ import ru.hogwarts.school.reposirory.StudentRepository;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -102,4 +103,55 @@ public class StudentService {
         return studentsPage.getContent();
 
     }
+
+    public List<String> getNameStartedBy(char firstSymbol) {
+        return studentRepository.findAll().stream()
+                .map(Student::getName)
+                .filter(n -> Character.toLowerCase(n.charAt(0))
+                        == Character.toLowerCase(firstSymbol))
+                .collect(Collectors.toList());
+    }
+
+    public double getAverageAge() {
+        return studentRepository.findAll()
+                .stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElseThrow(StudentNotFoundException::new);
+    }
+
+    public void printAsync() {
+        List<Student> all = studentRepository.findAll();
+        System.out.println(all.get(0).getName());
+        System.out.println(all.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println(all.get(2).getName());
+            System.out.println(all.get(3).getName());
+        }).start();
+        new Thread(() -> {
+            System.out.println(all.get(4).getName());
+            System.out.println(all.get(5).getName());
+        }).start();
+    }
+
+    public void printSync() {
+        List<Student> all = studentRepository.findAll();
+        printSync(all.get(0).getName());
+        printSync(all.get(1).getName());
+
+        new Thread(() -> {
+            printSync(all.get(2).getName());
+            printSync(all.get(3).getName());
+        }).start();
+        new Thread(() -> {
+            printSync(all.get(4).getName());
+            printSync(all.get(5).getName());
+        }).start();
+    }
+
+    private synchronized void printSync(String name) {
+        System.out.println(name);
+    }
+
 }
