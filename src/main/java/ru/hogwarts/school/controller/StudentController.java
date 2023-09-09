@@ -101,6 +101,16 @@ public class StudentController {
         return service.getAverageAge();
     }
 
+    @GetMapping("/threads/async")
+    public void printAsync() {
+        service.printAsync();
+    }
+
+    @GetMapping("/threads/sync")
+    public void printSync() {
+        service.printAsync();
+    }
+
 
 }
 
